@@ -1,0 +1,20 @@
+{
+  "meetings": [
+    {
+      "id": "1",
+      "name": "meeting name",
+      "from": 1469573173516,
+      "to": 1469573173517,
+      "description": "something need to be done in this meeting"
+    },
+    [
+      {
+        "id": "2",
+        "name": "meeting name 2",
+        "from": 1469573173516,
+        "to": 1469573173517,
+        "description": "something need to be done in this meeting"
+      }
+    ]
+  ]
+}
