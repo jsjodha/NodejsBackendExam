@@ -1,20 +1,49 @@
 {
   "meetings": [
     {
-      "id": "1",
-      "name": "meeting name",
+      "id": 1,
+      "name": "meeting name 3",
       "from": 1469573173516,
       "to": 1469573173517,
       "description": "something need to be done in this meeting"
     },
-    [
-      {
-        "id": "2",
-        "name": "meeting name 2",
-        "from": 1469573173516,
-        "to": 1469573173517,
-        "description": "something need to be done in this meeting"
-      }
-    ]
+    {
+      "id": 2,
+      "name": "meeting name 3",
+      "from": 1469573173516,
+      "to": 1469573173517,
+      "description": "something need to be done in this meeting"
+    },
+    {
+      "id": 3,
+      "name": "meeting name 3",
+      "from": 1469573173516,
+      "to": 1469573173517,
+      "description": "something need to be done in this meeting"
+    },
+    {
+      "id": 4,
+      "name": "meeting name 3",
+      "from": 1469573173516,
+      "to": 1469573173517,
+      "description": "something need to be done in this meeting",
+      "updTime": 1469812536723
+    },
+    {
+      "id": 5,
+      "name": "meeting name 3",
+      "from": 1469573173516,
+      "to": 1469573173517,
+      "description": "something need to be done in this meeting",
+      "updTime": 1469812684303
+    },
+    {
+      "id": 6,
+      "name": "meeting name 3",
+      "from": 1469573173516,
+      "to": 1469573173517,
+      "description": "something need to be done in this meeting",
+      "updTime": 1469812695386
+    }
   ]
 }

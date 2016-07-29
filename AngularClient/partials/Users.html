@@ -1,0 +1,29 @@
+<div class="container" ng-controller="usersCtrl">
+    <div class="page-header">
+        <h3>This is from {{ name }}</h3>
+    </div>
+
+    <p class="lead"> Demo a simple filter
+        <code>checkmark</code>
+    </p>
+
+    <p class="lead">
+        <p class="lead">
+            <table class="table table-striped">
+                <tr>
+                    <th>ID</th>
+                    <th>Updated At</th>
+                    <th>Name</th>
+                </tr>
+                debugger;
+                <tr ng-repeat="p in Users">
+                    <td>{{p.id}}</td>
+                    <td>{{p.updTime}}</td>
+                    <td>{{p.name}}</td>
+                </tr>
+            </table>
+        </p>
+
+    </p>
+
+</div>
