@@ -1,6 +1,27 @@
 <div class="container" ng-controller="HomeCtrl">
-  <div class="page-header">
-    <h3>This is from {{ name }}</h3>
-  </div>
+    <div class="page-header">
+        <h3>List of Meetings from the REST API
+      <code>/api/meetings</code>
+    </h3>
+    </div>
+    <p class="lead">
+        <table class="table table-striped">
+            <tr>
+                <th>ID</th>
+                <th>Updated At</th>
+                <th>Name</th>
+                <th>from</th>
+                <th>to</th>
+            </tr>
+
+            <tr ng-repeat="p in meetings">
+                <td>{{p.id}}</td>
+                <td>{{p.updTime| date:'MM/dd/yyyy HH:mm:ss'}}</td>
+                <td>{{p.name}}</td>
+                <td>{{p.from| date:'MM/dd/yyyy HH:mm:ss'}}</td>
+                <td>{{p.to| date:'MM/dd/yyyy HH:mm:ss'}}</td>
+            </tr>
+        </table>
+    </p>
 
 </div>

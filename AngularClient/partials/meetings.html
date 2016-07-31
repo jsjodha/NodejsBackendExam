@@ -15,13 +15,13 @@
                 <th>from</th>
                 <th>to</th>
             </tr>
-            debugger;
+           
             <tr ng-repeat="p in meetings">
                 <td>{{p.id}}</td>
-                <td>{{p.updTime}}</td>
+                <td>{{p.updTime| date:'MM/dd/yyyy HH:mm:ss'}}</td>
                 <td>{{p.name}}</td>
-                <td>{{p.from}}</td>
-                <td>{{p.to}}</td>
+                <td>{{p.from| date:'MM/dd/yyyy HH:mm:ss'}}</td>
+                <td>{{p.to| date:'MM/dd/yyyy HH:mm:ss'}}</td>
             </tr>
         </table>
     </p>

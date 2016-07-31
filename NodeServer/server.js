@@ -42,7 +42,7 @@ var server = app.listen(app.get('port'), function() {
 
 global.sio = socketio.listen(server);
 global.sio.on('connection', function(socket) {
-    console.log('at server.js connected by' + socket.id);
+    console.log('Client connected with ' + socket.id);
     // socket.on('MeetingCreated', function (msg) {
     //   console.log('Message Received: ', msg);
     //   socket.broadcast.emit('message', msg);

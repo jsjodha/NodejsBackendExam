@@ -10,65 +10,90 @@ myApp.controller("HeaderCtrl", ['$scope', '$location', 'UserAuthFactory',
         }
     }
 ]);
+
 var socket = io('http://localhost:9090');
-myApp.controller("HomeCtrl", ['$scope',
+
+myApp.controller("Home2Ctrl", ['$scope',
     function($scope) {
         $scope.name = "Home Controller";
     }
 ]);
+myApp.controller("HomeCtrl", ['$scope', 'meetingsFactory',
+    function($scope, meetingsFactory) {
+
+        $scope.meetings = [];
+        meetingsFactory.getMeetings().then(function(data) {
+            $scope.meetings = data.data;
+        });
+        socket.on('MeetingCreated', function(data) {
+            $scope.meetings.push(data);
+            $scope.$apply();
+        });
+        socket.on('MeetingUpdated', function(data) {
+            var index = findMeetingIndex(data);
+            if (index) {
+                $scope.meetings[index] = data;
+                $scope.$apply();
+            };
+        });
+        socket.on('MeetingDeleted', function(data) {
+            var index = findMeetingIndex(data);
+            if (index) {
+                $scope.meetings[index] = data;
+                $scope.$apply();
+            }
+        });
+
+        function findMeetingIndex(data) {
+            var index = -1;
+            var data = $scope.meetings.filter(function(met) {
+                if (met.id == data.id) {
+                    return index;
+                }
+                index++;
+            });
+            return index;
+        }
+    }
+]);
 
 
-myApp.controller("usersCtrl", ['$scope','usersFactory',
+myApp.controller("UsersCtrl", ['$scope', 'usersFactory',
     function($scope, usersFactory) {
         $scope.name = "Admin Controller";
-
-        debugger;
         $scope.Users = [];
         usersFactory.getAllUsers().then(function(data) {
             $scope.Users = data.data;
         });
         socket.on('usrCreated', function(data) {
-            debugger;
-            console.log(data);
             $scope.Users.push(data);
             $scope.$apply();
         });
 
         socket.on('usrUpdated', function(data) {
-            debugger;
-            $scope.meetiUsersngs[(data.id - 1)] = data;
-            $scope.$apply();
+            var index = findUsersIndex(data);
+            if (index) {
+                $scope.Users[index] = data;
+                $scope.$apply();
+            }
         });
         socket.on('usrDeleted', function(data) {
-            debugger;
-            $scope.Users.splice((data.id - 1), 1);
-            $scope.$apply();
-        });
-    }
-]);
-
-myApp.controller("MeetingsCtrl", ['$scope', 'dataFactory',
-    function($scope, dataFactory) {
-        $scope.meetings = [];
-        dataFactory.getMeetings().then(function(data) {
-            $scope.meetings = data.data;
-        });
-        socket.on('MeetingCreated', function(data) {
-            debugger;
-            console.log(data);
-            $scope.meetings.push(data);
-            $scope.$apply();
+            var index = findUsersIndex(data);
+            if (index) {
+                $scope.Users.splice(index, 1);
+                $scope.$apply();
+            }
         });
 
-        socket.on('MeetingUpdated', function(data) {
-            debugger;
-            $scope.meetings[(data.id - 1)] = data;
-            $scope.$apply();
-        });
-        socket.on('MeetingDeleted', function(data) {
-            debugger;
-            $scope.meetings.splice((data.id - 1), 1);
-            $scope.$apply();
-        });
+        function findUsersIndex(data) {
+            var index = -1;
+            var data = $scope.Users.filter(function(usr) {
+                if (usr.id == data.id) {
+                    return index;
+                }
+                index++;
+            });
+            return index;
+        }
     }
 ]);

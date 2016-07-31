@@ -1,53 +1,46 @@
 {
   "users": [
     {
-      "name": "new Users",
-      "password": "password",
-      "role": "user",
-      "id": 1,
-      "updTime": 1469814571512
+      "id": "1",
+      "updTime": 1469573173516,
+      "name": "admin",
+      "password": "admin",
+      "role": "admin"
     },
     {
-      "name": "new Users",
+      "id": "2",
+      "updTime": 1469965689204,
+      "name": "updated Users",
       "password": "password",
-      "role": "user",
-      "id": 2,
-      "updTime": 1469814578938
+      "role": "user"
     },
     {
-      "name": "new Users",
-      "password": "password",
-      "role": "user",
-      "id": 3,
-      "updTime": 1469814580030
+      "id": "3",
+      "updTime": 1469573173516,
+      "name": "jodha",
+      "password": "jodha",
+      "role": "admin"
     },
     {
       "name": "new Users",
       "password": "password",
       "role": "user",
       "id": 4,
-      "updTime": 1469814580380
+      "updTime": 1469816167008
     },
     {
       "name": "new Users",
       "password": "password",
       "role": "user",
       "id": 5,
-      "updTime": 1469814580560
+      "updTime": 1469816180671
     },
     {
-      "name": "new Users",
+      "name": "updated Users",
       "password": "password",
       "role": "user",
       "id": 6,
-      "updTime": 1469814580730
-    },
-    {
-      "name": "new Users",
-      "password": "password",
-      "role": "user",
-      "id": 7,
-      "updTime": 1469814580898
+      "updTime": 1469965143467
     }
   ]
 }

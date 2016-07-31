@@ -9,7 +9,7 @@ db.defaults({
         { id: "3", updTime: Date.now(), name: 'jodha', password: 'jodha', role: 'admin' }
     ]
 }).value();
-
+db.write();
 var users = {
 
     getAllUsers: function(req, res) {

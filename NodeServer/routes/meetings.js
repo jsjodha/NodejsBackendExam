@@ -8,9 +8,6 @@ db.defaults({
     ]
 }).value();
 
-const meetingsdb = db.get('meetings');
-
-
 
 /* HACK to simulate thirdparty callback which can take time to respond. */
 function wait(ms) {
@@ -20,33 +17,22 @@ function wait(ms) {
         end = new Date().getTime();
     }
 }
-
-//var realtime = require('../service/realtimeService');
-//var rt = new realtime();
-//rt.invoke('testing', 'somedata');
-
-var Meeting = function Meeting(sio, server, callback) {
-    console.log('typeof sio is ' + typeof(sio));
-    this.sio = sio;
-    console.log('typeof server is ' + typeof(server));
-    this.server = server;
-    callback();
-};
-
 module.exports = {
-    getAllmeetings: function(req, res) {
-        var alldata = meetingsdb.value();
+    getAllmeetings: function(req, res, next) {
+        console.log('executing getAllmeetings');
+        var alldata = db.get('meetings').value();
         res.json(alldata);
     },
     getmeeting: function(req, res) {
-        var meeting = meetingsdb.find({ id: req.params.id }).value();
+        var meeting = db.get('meetings').find({ id: req.params.id }).value();
         res.json(meeting);
     },
     create: function(req, res) {
         var met = req.body;
-        met.id = meetingsdb.__wrapped__.meetings.length + 1;
+        var m = db.get('meetings').last().value();
+        met.id = db.get('meetings').__wrapped__.meetings.length + 1;
         met.updTime = Date.now();
-        var result = meetingsdb.push(met).last().value();
+        var result = db.get('meetings').push(met).last().value();
         res.json(result);
 
         global.sio.emit('MeetingCreated', result);
@@ -56,7 +42,7 @@ module.exports = {
         //temp hack 
         met.id = req.params.id;
         met.updTime = Date.now();
-        var val = meetingsdb.find({ id: req.params.id })
+        var val = db.get('meetings').find({ id: req.params.id })
             .assign(met)
             .value();
         global.sio.emit('MeetingUpdated', val);
@@ -68,7 +54,7 @@ module.exports = {
         //temp hack 
         met.id = req.params.id;
         met.updTime = Date.now();
-        var result = meetingsdb.remove({ id: met.id })
+        var result = db.get('meetings').remove({ id: met.id })
             .value();
 
         var deleted = {
