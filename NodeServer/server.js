@@ -10,7 +10,7 @@ var authenticator = require('./service/requestvalidator');
 
 var router = require('./routes');
 
-app.use(logger('combined'));
+app.use(logger('dev'));
 app.use(bodyparser.json());
 
 app.all('/*', function(req, res, next) {
@@ -27,12 +27,12 @@ app.all('/*', function(req, res, next) {
 });
 //intercept all call comming to Api route.
 app.all('/api/*', function(req, res, next) {
-    console.log('intercepting every call to api route.' +
+    console.log('intercepting call to api route.' +
         '\r\n  StartTime:' + req._startTime +
         '\r\n  Method:' + req.method +
         '\r\n  url:' + req.url +
-        '\r\n  body:' + req.body);
-    global.Api_TotalRequestsReceived += 1; 
+        '\r\n  body:' + JSON.stringify(req.body));
+    global.Api_TotalRequestsReceived += 1;
     next();
 
 }, function(req, res, next) {

@@ -2,7 +2,7 @@ const lowdb = require('lowdb');
 var secrat = require('../config/secrat.js')();
 var jwt = require('jwt-simple');
 var userprovider = require('./users');
-const db = lowdb('./db/tokens.json');
+const db = lowdb('');
 
 db.defaults({ tokens: [] }).value();
 
@@ -108,7 +108,7 @@ function login(req, res) {
 
 function logout(req, res) {
     var access_token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
-    if (access_token || key) {
+    if (access_token) {
         try {
             var result = db.get('tokens').remove({
                 token: access_token
@@ -140,7 +140,7 @@ function logout(req, res) {
 
 
 function genToken(user) {
-    var expire = expireIn(1); //1 day to expire
+    var expire = expireIn(10); //10 mins to expire
     var token = jwt.encode({
         exp: expire
     }, require('../config/secrat.js')());
@@ -155,7 +155,7 @@ function genToken(user) {
 }
 
 function genExpireToken(user) {
-    var expire = expireIn(-1); //1 day to expire
+    var expire = expireIn(-10); //-10 mins expired
     var token = jwt.encode({
         exp: expire
     }, require('../config/secrat.js')());
@@ -167,9 +167,30 @@ function genExpireToken(user) {
     };
 }
 
-function expireIn(numOfDay) {
+function expireIn(mins) {
     var objdate = new Date();
-    return objdate.setDate(objdate.getDate() + numOfDay);
+    var expireationDate = objdate.setMinutes(objdate.getMinutes() + mins);
+    return expireationDate;
 }
+
+//hack to delete tokens if users does not logout hemself.
+setInterval(function() {
+    db.get('tokens').value().filter(function(item) {
+        var d = new Date(item.expires);
+        console.log('User:' + item.user + ' will ExpireTime:' + d);
+        var c = new Date(Date.now());
+        if (Date.now() > item.expires) {
+            console.log('auto kill expired session.', JSON.stringify(item))
+            db.get('tokens').remove(item);
+        }
+    });
+    if (global.Api_CountersEnabled) {
+        var users = db.get('tokens').value();
+        global.sio.emit('activeUsers', users.length);
+        global.sio.emit('loginSessions', users);
+    }
+
+}, 30 * 1000)
+
 
 module.exports = tokenprovider;

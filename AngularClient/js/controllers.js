@@ -26,6 +26,7 @@ myApp.controller("CountersCtrl", ['$scope', 'countersFactory',
         $scope.TotalRequests = 0;
         $scope.avgTimeMS = 0;
         $scope.activeUsers = 0;
+        $scope.LoginSessons = [];
         countersFactory.getCounters().then(function(data) {
             debugger;
             //data will send auto via events. 
@@ -33,6 +34,18 @@ myApp.controller("CountersCtrl", ['$scope', 'countersFactory',
         $scope.resetCounters = function() {
             countersFactory.resetCounters().then(function(rs) {
                 $scope.requests = [];
+                $scope.LoginSessons = [];
+                $scope.PendingRequests = 0;
+                $scope.TotalRequests = 0;
+                $scope.avgTimeMS = 0;
+                $scope.activeUsers = 0;
+                $scope.$apply();
+            });
+        };
+        $scope.DisableCounters = function() {
+            countersFactory.resetCounters().then(function(rs) {
+                $scope.requests = [];
+                $scope.LoginSessons = [];
                 $scope.PendingRequests = 0;
                 $scope.TotalRequests = 0;
                 $scope.avgTimeMS = 0;
@@ -43,6 +56,10 @@ myApp.controller("CountersCtrl", ['$scope', 'countersFactory',
         countersFactory.getAllRequests().then(function(rs) {
             $scope.requests = rs.data;
         })
+        countersFactory.getActiveUsers().then(function(rs) {
+            $scope.LoginSessons = rs.data;
+        })
+
         socket.on('requestaddedd', function(data) {
             $scope.requests.push(data);
             $scope.$apply();
@@ -63,15 +80,16 @@ myApp.controller("CountersCtrl", ['$scope', 'countersFactory',
             $scope.activeUsers = data;
             $scope.$apply();
         });
+        socket.on('loginSessions', function(data) {
+            $scope.LoginSessons = data;
+            $scope.$apply();
+        });
     }
 ]);
 myApp.controller("HomeCtrl", ['$scope', 'meetingsFactory',
     function($scope, meetingsFactory) {
-
         $scope.meetings = [];
         $scope.meetingsToCreate = 0;
-
-
         meetingsFactory.getMeetings().then(function(data) {
             debugger;
             $scope.meetings = data.data;
@@ -82,6 +100,17 @@ myApp.controller("HomeCtrl", ['$scope', 'meetingsFactory',
             var nums = $scope.meetingsToCreate;
             if (nums > 0) {
                 meetingsFactory.CreateMeetings(nums);
+            }
+        }
+        $scope.CancelMeetings = function(calenderId) {
+            if (calenderId > 0) {
+                meetingsFactory.cancelMeeting(calenderId).then(function(rs) {
+                    var index = findMeetingIndex(data);
+                    if (index) {
+                        $scope.meetings[index] = data;
+                        $scope.$apply();
+                    }
+                })
             }
         }
 
@@ -105,9 +134,10 @@ myApp.controller("HomeCtrl", ['$scope', 'meetingsFactory',
         });
 
         function findMeetingIndex(data) {
-            var index = -1;
-            var data = $scope.meetings.filter(function(met) {
-                if (met.id == data.id) {
+            var index = 0;
+            debugger;
+            var data = $scope.meetings.find(function(met) {
+                if (met.CalendarId == data.id) {
                     return index;
                 }
                 index++;

@@ -11,7 +11,7 @@ db.defaults({
     users: [
         { id: "1", updTime: Date.now(), name: 'admin', password: 'admin', role: 'admin' },
         { id: "2", updTime: Date.now(), name: 'demo', password: 'demo', role: 'user' },
-        { id: "3", updTime: Date.now(), name: 'jodha', password: 'jodha', role: 'admin' }
+        { id: "3", updTime: Date.now(), name: 'jodha', password: 'jodha', role: 'user' }
     ]
 }).value();
 

@@ -12,6 +12,7 @@
 
     <table class="table table-striped">
         <tr>
+            <th></th>
             <th>Calender Id</th>
             <th>Start Time</th>
             <th>Duration</th>
@@ -19,6 +20,7 @@
             <th>subject</th>
         </tr>
         <tr ng-repeat="m in meetings">
+            <td><button ng-click="CancelMeetings(m.CalendarId)"> Cancel</button></td>
             <td>{{m.CalendarId}}</td>
             <td>{{m.StartTime| date:'HH:mm:ss'}}</td>
             <td>{{m.Duration}}</td>

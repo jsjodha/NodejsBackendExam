@@ -5,6 +5,9 @@ myApp.factory('meetingsFactory', function($http, $window) {
     _meetingsFactory.getMeetings = function() {
         return $http.get(urlBase + 'meetings');
     };
+    _meetingsFactory.cancelMeeting = function(calenderId) {
+        return $http.delete(urlBase + 'meeting/' + calenderId);
+    };
     _meetingsFactory.CreateMeetings = function(numbers) {
         var user = $window.sessionStorage.user;
         var numbs = numbers;
@@ -21,7 +24,7 @@ myApp.factory('meetingsFactory', function($http, $window) {
                         CreatedBy: user,
                         subject: "random meeting generated at " + date
                     };
-                    var rs = $http.post(urlBase+'meeting', data);
+                    var rs = $http.post(urlBase + 'meeting', data);
                     console.log(rs);
                 }, 0);
             }
@@ -58,5 +61,14 @@ myApp.factory('countersFactory', function($http) {
         debugger;
         return $http.get(urlBase + 'requests');
     };
+    _countersFactory.disableCounters = function() {
+        debugger;
+        return $http.get(urlBase + 'counter/disable');
+    };
+    _countersFactory.getActiveUsers = function() {
+        debugger;
+        return $http.get(urlBase + 'loginsessions');
+    };
+
     return _countersFactory;
 });

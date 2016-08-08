@@ -22,7 +22,7 @@ module.exports = {
         return rs;
     },
     getmeeting: function(req, res) {
-        var meeting = db.get('meetings').find({ MeetingId: parseParam(req) }).value();
+        var meeting = db.get('meetings').find({ CalendarId: parseParam(req) }).value();
 
         return meeting;
     },
@@ -30,7 +30,7 @@ module.exports = {
         var startTime = req.reqStartTime;
         var met = req.body;
         var lastVal = db.get('meetings').last().value();
-        met.MeetingId = lastVal.MeetingId + 1;
+        met.MeetingId = lastVal.CalendarId + 1;
         met.CalendarId = lastVal.CalendarId + 1;
         met.CreatedBy = req.uname;
         var result = db.get('meetings').push(met).last().value();
@@ -39,10 +39,10 @@ module.exports = {
     },
     update: function(req, res) {
         var met = req.body;
-        met.MeetingId = parseParam(req);
+        met.CalendarId = parseParam(req);
         met.updTime = Date.now();
         var val = db.get('meetings')
-            .find({ MeetingId: met.MeetingId })
+            .find({ CalendarId: met.CalendarId })
             .assign(met)
             .value();
         global.sio.emit('MeetingUpdated', val);
@@ -51,14 +51,14 @@ module.exports = {
     },
     delete: function(req, res) {
         var met = req.body;
-        met.MeetingId = parseParam(req);
+        met.CalendarId = parseParam(req);
         met.updTime = Date.now();
         var result = db.get('meetings')
-            .remove({ MeetingId: met.id })
+            .remove({ CalendarId: met.CalendarId })
             .value();
         var deleted = {
-            id: met.MeetingId,
-            message: 'Meeting id ' + met.MeetingId + ' deleted.'
+            id: met.CalendarId,
+            message: 'Meeting id ' + met.CalendarId + ' deleted.'
         };
         global.sio.emit('MeetingDeleted', deleted);
 

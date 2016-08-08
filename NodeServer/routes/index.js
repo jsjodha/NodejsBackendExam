@@ -45,7 +45,11 @@ routes.push({ method: 'DELETE', url: '/api/admin/user/:id', callback: user.delet
 
 routes.push({ method: 'GET', url: '/api/admin/counters', callback: counters.get });
 routes.push({ method: 'POST', url: '/api/admin/counter/reset', callback: counters.reset });
+routes.push({ method: 'POST', url: '/api/admin/counter/disable', callback: counters.disable });
 routes.push({ method: 'GET', url: '/api/admin/requests', callback: counters.getAllReq });
+routes.push({ method: 'GET', url: '/api/admin/loginsessions', callback: counters.getActiveUsers });
+
+
 
 var authenticator = require('../service/requestvalidator');
 module.exports = function(req, res, next) {

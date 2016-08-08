@@ -2,7 +2,7 @@ const lowdb = require('lowdb');
 var secrat = require('../config/secrat.js')();
 var jwt = require('jwt-simple');
 var userprovider = require('./users');
-const db = lowdb('./db/tokens.json');
+const db = lowdb();
 
 db.defaults({ tokens: [] }).value();
 

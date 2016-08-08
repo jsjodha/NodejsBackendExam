@@ -1,6 +1,6 @@
 const lowdb = require('lowdb');
 
-const db = lowdb('./db/calender.json');
+const db = lowdb();
 
 db.defaults({
     calenders: [

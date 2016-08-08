@@ -4,6 +4,7 @@
       <code>/api/admin/Counters</code>
     </h3>
         <button ng-click="resetCounters()">Reset Counters </button>
+        <button ng-click="DisableCounters()">Disable Counters </button>
     </div>
     <p class="lead">
         <div class="row">
@@ -26,7 +27,28 @@
         </div>
     </p>
     <p class="lead">
-        <table class="table table-striped">
+        <h3>Active Session(s)</h3>
+        <table class="table table-striped" style="max-height:300px;overflow:scroll">
+            <tr>
+                <th>Login At</th>
+                <th>Expires In</th>
+                <th>UserName</th>
+                <th>Role</th>
+                <th>Token</th>
+            </tr>
+
+            <tr ng-repeat="r in LoginSessons">
+                <td>{{r.createdAt | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                <td>{{r.expires | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                <td>{{r.user}}</td>
+                <td>{{r.role}}</td>
+                <td>{{r.token}}</td>
+            </tr>
+        </table>
+    </p>
+    <p class="lead">
+        <h3>All Requests Sent to Api</h3>
+        <table class="table table-striped" style="max-height:300px;overflow:scroll">
             <tr>
                 <th>Method</th>
                 <th>Url</th>
