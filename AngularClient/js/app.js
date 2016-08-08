@@ -17,15 +17,21 @@ myApp.config(function($routeProvider, $httpProvider) {
             access: {
                 requiredLogin: true
             }
+        }).when('/Home', {
+            templateUrl: 'partials/home.html',
+            controller: 'HomeCtrl',
+            access: {
+                requiredLogin: true
+            }
         }).when('/Users', {
             templateUrl: 'partials/Users.html',
             controller: 'UsersCtrl',
             access: {
                 requiredLogin: true
             }
-        }).when('/Meetings', {
-            templateUrl: 'partials/meetings.html',
-            controller: 'MeetingsCtrl',
+        }).when('/Counters', {
+            templateUrl: 'partials/counters.html',
+            controller: 'CountersCtrl',
             access: {
                 requiredLogin: true
             }

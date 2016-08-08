@@ -1,36 +1,5 @@
 {
-  "meetings": [
-    {
-      "id": 8,
-      "name": "meeting name 3",
-      "from": 1469573173516,
-      "to": 1469573173517,
-      "description": "something need to be done in this meeting",
-      "updTime": 1469817948542
-    },
-    {
-      "id": 9,
-      "name": "meeting name 3",
-      "from": 1469573173516,
-      "to": 1469573173517,
-      "description": "something need to be done in this meeting",
-      "updTime": 1469817964780
-    },
-    {
-      "id": 3,
-      "name": "meeting name 3",
-      "from": 1469573173516,
-      "to": 1469573173517,
-      "description": "something need to be done in this meeting",
-      "updTime": 1469964511278
-    },
-    {
-      "id": 4,
-      "name": "meeting name 3",
-      "from": 1469573173516,
-      "to": 1469573173517,
-      "description": "something need to be done in this meeting",
-      "updTime": 1469964522904
-    }
-  ]
+    "meetings": [
+
+    ]
 }

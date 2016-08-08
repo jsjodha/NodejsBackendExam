@@ -5,10 +5,12 @@ var bodyparser = require('body-parser');
 var app = express();
 var util = require('util');
 var http = require("http").Server(app);
-
 var socketio = require('socket.io');
+var authenticator = require('./service/requestvalidator');
 
-app.use(logger('dev'));
+var router = require('./routes');
+
+app.use(logger('combined'));
 app.use(bodyparser.json());
 
 app.all('/*', function(req, res, next) {
@@ -23,48 +25,27 @@ app.all('/*', function(req, res, next) {
         next();
     }
 });
+//intercept all call comming to Api route.
+app.all('/api/*', function(req, res, next) {
+    console.log('intercepting every call to api route.' +
+        '\r\n  StartTime:' + req._startTime +
+        '\r\n  Method:' + req.method +
+        '\r\n  url:' + req.url +
+        '\r\n  body:' + req.body);
+    global.Api_TotalRequestsReceived += 1; 
+    next();
 
-app.all('/api/*', [require('./service/requestvalidator')]);
+}, function(req, res, next) {
+    return authenticator(req, res, next);
+}, router);
 
-app.use('/', require('./routes'));
-
-app.use(function(req, res, next) {
-    var err = new Error('Not Found.');
-    err.status = 404;
-    next(err);
-});
 
 app.set('port', process.env.PORT || 9090);
 
 var server = app.listen(app.get('port'), function() {
     console.log('Server is started at port ' + server.address().port);
+    global.sio = socketio.listen(server);
+    global.sio.on('connection', function(socket) {
+        console.log('Client connected with ' + socket.id);
+    });
 });
-
-global.sio = socketio.listen(server);
-global.sio.on('connection', function(socket) {
-    console.log('Client connected with ' + socket.id);
-    // socket.on('MeetingCreated', function (msg) {
-    //   console.log('Message Received: ', msg);
-    //   socket.broadcast.emit('message', msg);
-    // });
-});
-
-// var realtime = require('./service/realtimeService');
-// const rt = new realtime();
-// rt.Init(socketio, server, onReady);
-
-function onReady() {
-    console.log('ready to work.');
-};
-
-var counter = 1;
-var Server = module.exports = {
-    ctr: counter,
-    sio: function(type, data) {
-        this.socketio.sockets.broadcast.emit(type, data);
-    },
-    emitter: function(type, data) {
-        console.log('emiting message');
-        this.socketio.sockets.broadcast.emit(type, data);
-    }
-}

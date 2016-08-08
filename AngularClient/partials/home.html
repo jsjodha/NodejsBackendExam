@@ -4,24 +4,28 @@
       <code>/api/meetings</code>
     </h3>
     </div>
-    <p class="lead">
-        <table class="table table-striped">
-            <tr>
-                <th>ID</th>
-                <th>Updated At</th>
-                <th>Name</th>
-                <th>from</th>
-                <th>to</th>
-            </tr>
+    <div class="page-header">
+        <p>Create Randome Meetings</p>
+        <input type="text" palceholder="Enter # meeting to create" ng-model="meetingsToCreate"></value>
+        <button ng-click="CreateMeetings()">Generate Meetings {{meetingsToCreate}}</button>
+    </div>
 
-            <tr ng-repeat="p in meetings">
-                <td>{{p.id}}</td>
-                <td>{{p.updTime| date:'MM/dd/yyyy HH:mm:ss'}}</td>
-                <td>{{p.name}}</td>
-                <td>{{p.from| date:'MM/dd/yyyy HH:mm:ss'}}</td>
-                <td>{{p.to| date:'MM/dd/yyyy HH:mm:ss'}}</td>
-            </tr>
-        </table>
-    </p>
+    <table class="table table-striped">
+        <tr>
+            <th>Calender Id</th>
+            <th>Start Time</th>
+            <th>Duration</th>
+            <th>StartDate</th>
+            <th>subject</th>
+        </tr>
+        <tr ng-repeat="m in meetings">
+            <td>{{m.CalendarId}}</td>
+            <td>{{m.StartTime| date:'HH:mm:ss'}}</td>
+            <td>{{m.Duration}}</td>
+            <td>{{m.StartDate| date:'MM/dd/yyyy'}}</td>
+            <td>{{m.subject}}</td>
+        </tr>
+    </table>
+
 
 </div>

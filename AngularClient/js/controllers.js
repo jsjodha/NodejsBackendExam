@@ -1,6 +1,11 @@
-myApp.controller("HeaderCtrl", ['$scope', '$location', 'UserAuthFactory',
-    function($scope, $location, UserAuthFactory) {
-
+myApp.controller("HeaderCtrl", ['$scope', '$location', 'UserAuthFactory', '$window',
+    function($scope, $location, UserAuthFactory, $window) {
+        $scope.username = $window.sessionStorage.user;
+        $scope.isAdmin = false;
+        debugger;
+        if ($window.sessionStorage.userRole == 'admin') {
+            $scope.isAdmin = true;
+        }
         $scope.isActive = function(route) {
             return route === $location.path();
         }
@@ -13,18 +18,73 @@ myApp.controller("HeaderCtrl", ['$scope', '$location', 'UserAuthFactory',
 
 var socket = io('http://localhost:9090');
 
-myApp.controller("Home2Ctrl", ['$scope',
-    function($scope) {
-        $scope.name = "Home Controller";
+myApp.controller("CountersCtrl", ['$scope', 'countersFactory',
+    function($scope, countersFactory) {
+        $scope.name = "Counters Controller";
+        $scope.requests = [];
+        $scope.PendingRequests = 0;
+        $scope.TotalRequests = 0;
+        $scope.avgTimeMS = 0;
+        $scope.activeUsers = 0;
+        countersFactory.getCounters().then(function(data) {
+            debugger;
+            //data will send auto via events. 
+        })
+        $scope.resetCounters = function() {
+            countersFactory.resetCounters().then(function(rs) {
+                $scope.requests = [];
+                $scope.PendingRequests = 0;
+                $scope.TotalRequests = 0;
+                $scope.avgTimeMS = 0;
+                $scope.activeUsers = 0;
+                $scope.$apply();
+            });
+        };
+        countersFactory.getAllRequests().then(function(rs) {
+            $scope.requests = rs.data;
+        })
+        socket.on('requestaddedd', function(data) {
+            $scope.requests.push(data);
+            $scope.$apply();
+        });
+        socket.on('TotalRequestsReceived', function(data) {
+            $scope.TotalRequests = data;
+            $scope.$apply();
+        });
+        socket.on('PendingRequests', function(data) {
+            $scope.PendingRequests = data;
+            $scope.$apply();
+        });
+        socket.on('avgTimeMS', function(data) {
+            $scope.avgTimeMS = data;
+            $scope.$apply();
+        });
+        socket.on('activeUsers', function(data) {
+            $scope.activeUsers = data;
+            $scope.$apply();
+        });
     }
 ]);
 myApp.controller("HomeCtrl", ['$scope', 'meetingsFactory',
     function($scope, meetingsFactory) {
 
         $scope.meetings = [];
+        $scope.meetingsToCreate = 0;
+
+
         meetingsFactory.getMeetings().then(function(data) {
+            debugger;
             $scope.meetings = data.data;
         });
+
+        $scope.CreateMeetings = function() {
+            debugger;
+            var nums = $scope.meetingsToCreate;
+            if (nums > 0) {
+                meetingsFactory.CreateMeetings(nums);
+            }
+        }
+
         socket.on('MeetingCreated', function(data) {
             $scope.meetings.push(data);
             $scope.$apply();
@@ -60,7 +120,8 @@ myApp.controller("HomeCtrl", ['$scope', 'meetingsFactory',
 
 myApp.controller("UsersCtrl", ['$scope', 'usersFactory',
     function($scope, usersFactory) {
-        $scope.name = "Admin Controller";
+        debugger;
+        $scope.name = "User Management Controller";
         $scope.Users = [];
         usersFactory.getAllUsers().then(function(data) {
             $scope.Users = data.data;

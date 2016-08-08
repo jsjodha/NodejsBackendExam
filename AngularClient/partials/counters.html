@@ -1,0 +1,50 @@
+<div class="container" ng-controller="CountersCtrl">
+    <div class="page-header">
+        <h3>Counters
+      <code>/api/admin/Counters</code>
+    </h3>
+        <button ng-click="resetCounters()">Reset Counters </button>
+    </div>
+    <p class="lead">
+        <div class="row">
+            <div class="col-md-3">
+                <p>I/O(s) </p>
+                <h2>{{TotalRequests}}</h2>
+            </div>
+            <div class="col-md-3">
+                <p>Pending Request(s) </p>
+                <h2>{{PendingRequests}}</h2>
+            </div>
+            <div class="col-md-3">
+                <p>Avg. I/O (ms) </p>
+                <h2>{{avgTimeMS}}</h2>
+            </div>
+            <div class="col-md-3">
+                <p>Active User(s) </p>
+                <h2>{{activeUsers}}</h2>
+            </div>
+        </div>
+    </p>
+    <p class="lead">
+        <table class="table table-striped">
+            <tr>
+                <th>Method</th>
+                <th>Url</th>
+                <th>StartTime</th>
+                <th>StartTime</th>
+                <th>body</th>
+
+            </tr>
+
+            <tr ng-repeat="r in requests">
+                <td>{{r.method}}</td>
+                <td>{{r.url}}</td>
+                <td>{{r.startTime}}</td>
+                <td>{{r.startTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                <td>{{r.body}}</td>
+
+            </tr>
+        </table>
+    </p>
+
+</div>

@@ -1,11 +1,6 @@
 const lowdb = require('lowdb');
 
-//Use below line to persist data.
-//const db = lowdb('./db/user.json');
-
-//for in memory data.
-const db = lowdb();
-
+const db = lowdb('./db/user.json');
 
 db.defaults({
     users: [
@@ -14,25 +9,21 @@ db.defaults({
         { id: "3", updTime: Date.now(), name: 'jodha', password: 'jodha', role: 'admin' }
     ]
 }).value();
-
+db.write();
 var users = {
 
     getAllUsers: function(req, res) {
-        var allUsers = [];
-        if (req.urole == 'admin') {
-            allUsers = db.get('users').value();
-        } else {
-            allUsers.push(db.get('users').find({ name: req.uname }).value());
-        }
-        return allUsers;
+        var allUsers = db.get('users').value();
+        res.json(allUsers);
     },
 
     getuser: function(req, res) {
-        var user = db.get('users').find({ id: parseParam(req) }).value();
-        return user;
+        var user = db.get('users').find({ id: req.params.id }).value();
+        res.json(user);
     },
 
     isvaliduser: function(uname, pass) {
+
         return db.get('users').find({ name: uname, password: pass }).value();
     },
     hasUser: function(username) {
@@ -40,42 +31,36 @@ var users = {
     },
     create: function(req, res) {
         var usr = req.body;
-        var lastVal = db.get('users').last().value();
-        usr.id = lastVal.id + 1;
+        usr.id = db.__wrapped__.users.length + 1;
         usr.updTime = Date.now();
         var user = db.get('users').push(usr).last().value();
         global.sio.emit('usrCreated', user);
-        return user;
+        res.json(user);
     },
     update: function(req, res) {
         var usr = req.body;
-        usr.id = parseParam(req);
+        usr.id = req.params.id;
         usr.updTime = Date.now();
         var val = db.get('users')
             .find({ id: usr.id })
             .assign(usr)
             .value();
         global.sio.emit('usrUpdated', val);
-        return val;
+        res.json(val);
 
     },
     delete: function(req, res) {
-        var id = parseParam(req);
         var val = db.get('users')
-            .remove({ id: id })
+            .remove({ id: req.params.id })
             .value();
 
         var usrDeleted = {
-            id: id,
-            message: 'user id ' + id + ' deleted.'
+            id: req.params.id,
+            message: 'user id ' + req.params.id + ' deleted.'
         };
         global.sio.emit('usrDeleted', usrDeleted);
-        return usrDeleted;
+        res.json(usrDeleted);
     }
 };
 
-function parseParam(req) {
-    var param = req.params[0];
-    return parseInt(param.substr(param.lastIndexOf('/') + 1, param.length));
-}
 module.exports = users;

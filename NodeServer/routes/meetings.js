@@ -1,67 +1,72 @@
 const lowdb = require('lowdb');
-
-const db = lowdb('./db/meetings.json');
+var evt = require('events').EventEmitter();
+const db = lowdb();
 
 db.defaults({
     meetings: [
-        { id: "1", name: "meeting name", from: Date.now(), to: Date.now() + 1, description: 'something need to be done in this meeting' }
+        { MeetingId: 1, CalendarId: 1123, StartTime: Date.now(), Duration: 30, StartDate: Date.now(), CreatedBy: "admin", subject: "meeting with J S" }
     ]
 }).value();
 
-
-/* HACK to simulate thirdparty callback which can take time to respond. */
-function wait(ms) {
-    var start = new Date().getTime();
-    var end = start;
-    while (end < start + ms) {
-        end = new Date().getTime();
-    }
-}
 module.exports = {
     getAllmeetings: function(req, res, next) {
-        console.log('executing getAllmeetings');
-        var alldata = db.get('meetings').value();
-        res.json(alldata);
+        var rs = [];
+        if (req.urole == 'admin') {
+            rs = db.get('meetings').value();
+        } else {
+            db.get('meetings').value().filter(function(item) {
+                if (item.CreatedBy == req.uname)
+                    rs.push(item);
+            })
+        }
+        return rs;
     },
     getmeeting: function(req, res) {
-        var meeting = db.get('meetings').find({ id: req.params.id }).value();
-        res.json(meeting);
+        var meeting = db.get('meetings').find({ MeetingId: parseParam(req) }).value();
+
+        return meeting;
     },
     create: function(req, res) {
+        var startTime = req.reqStartTime;
         var met = req.body;
-        var m = db.get('meetings').last().value();
-        met.id = db.get('meetings').__wrapped__.meetings.length + 1;
-        met.updTime = Date.now();
+        var lastVal = db.get('meetings').last().value();
+        met.MeetingId = lastVal.MeetingId + 1;
+        met.CalendarId = lastVal.CalendarId + 1;
+        met.CreatedBy = req.uname;
         var result = db.get('meetings').push(met).last().value();
-        res.json(result);
-
         global.sio.emit('MeetingCreated', result);
+        return result;
     },
     update: function(req, res) {
         var met = req.body;
-        //temp hack 
-        met.id = req.params.id;
+        met.MeetingId = parseParam(req);
         met.updTime = Date.now();
-        var val = db.get('meetings').find({ id: req.params.id })
+        var val = db.get('meetings')
+            .find({ MeetingId: met.MeetingId })
             .assign(met)
             .value();
         global.sio.emit('MeetingUpdated', val);
-        res.json(val);
+        return val;
 
     },
     delete: function(req, res) {
         var met = req.body;
-        //temp hack 
-        met.id = req.params.id;
+        met.MeetingId = parseParam(req);
         met.updTime = Date.now();
-        var result = db.get('meetings').remove({ id: met.id })
+        var result = db.get('meetings')
+            .remove({ MeetingId: met.id })
             .value();
-
         var deleted = {
-            id: req.params.id,
-            message: 'Meeting id ' + req.params.id + ' deleted.'
+            id: met.MeetingId,
+            message: 'Meeting id ' + met.MeetingId + ' deleted.'
         };
         global.sio.emit('MeetingDeleted', deleted);
-        res.json(deleted);
+
+        return deleted;
     }
+}
+
+function parseParam(req) {
+    var param = req.params[0];
+    return parseInt(param.substr(param.lastIndexOf('/') + 1, param.length));
 }
